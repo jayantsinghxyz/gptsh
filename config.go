@@ -11,14 +11,15 @@ import (
 
 type config struct {
 	config map[string]string
-	path string
+	path   string
 }
 
 func NewConfig(path string, filename string) *config {
 	configPath := fmt.Sprintf("%s/%s", path, filename)
 	configData, err := godotenv.Read(configPath)
 	if err != nil {
-		if errors.Is(err, os.ErrNotExist) {}
+		if errors.Is(err, os.ErrNotExist) {
+		}
 	}
 	return &config{config: configData, path: configPath}
 }

@@ -1,10 +1,10 @@
 package main
 
 import (
-	"errors"
 	"fmt"
 	"log"
 	"os"
+	"strings"
 
 	"github.com/urfave/cli/v2"
 )
@@ -34,21 +34,20 @@ func main() {
 				fmt.Println("Work in progress")
 				return nil
 			} else {
-				apiKey, err := configData.getOpenaiApiKey()
-				if err != nil {
-					if errors.Is(err, os.ErrNotExist) {
-						apiKey, err = configData.askOpenaiApiKey()
-						if err != nil {
-							log.Fatal(err)
-						}
-					} else {
+				apiKey := configData.getOpenaiApiKey()
+				if len(apiKey) == 0 {
+					_, err = configData.askOpenaiApiKey()
+					if err != nil {
 						log.Fatal(err)
 					}
 				}
 
-				fmt.Println(flagApiKey, apiKey)
+				openai := NewOpenai(configData)
 
-				fmt.Println("ctx.App.Name", ctx.Args().Slice(), flagApiKey)
+				prompt := strings.Join(ctx.Args().Slice(), " ")
+				completionResponse := openai.chatCompletion(prompt)
+				fmt.Print(completionResponse)
+
 				return nil
 			}
 		},

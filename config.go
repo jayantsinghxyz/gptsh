@@ -24,12 +24,9 @@ func NewConfig(path string, filename string) *config {
 	return &config{config: configData, path: configPath}
 }
 
-func (ctx config) getOpenaiApiKey() (key string, err error) {
+func (ctx config) getOpenaiApiKey() (key string) {
 	apiKey := ctx.config["OPENAI_API_KEY"]
-	if len(apiKey) == 0 {
-		return "", os.ErrNotExist
-	}
-	return apiKey, nil
+	return apiKey
 }
 
 func (ctx config) askOpenaiApiKey() (key string, err error) {
@@ -40,7 +37,7 @@ func (ctx config) askOpenaiApiKey() (key string, err error) {
 	if err != nil {
 		return "", err
 	}
-	return ctx.getOpenaiApiKey()
+	return ctx.getOpenaiApiKey(), nil
 }
 
 func (ctx config) setOpenaiApiKey(key string) error {
